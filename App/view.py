@@ -28,6 +28,7 @@
 import sys
 import config
 import threading
+import time
 from App import controller
 from DISClib.ADT import stack
 assert config
@@ -44,7 +45,7 @@ operación seleccionada.
 # ___________________________________________________
 
 
-servicefile = 'bus_routes_14000.csv'
+servicefile = 'bus_routes_50.csv'
 initialStation = None
 
 # ___________________________________________________
@@ -67,6 +68,14 @@ def printMenu():
     print("*******************************************")
 
 
+def mide_tiempo(funcion):
+    def funcion_medida(*args, **kwargs):
+        inicio = time.time()
+        c = funcion(*args, **kwargs)
+        print(time.time() - inicio)
+        return c
+    return funcion_medida
+
 def optionTwo(cont):
     print("\nCargando información de transporte de singapur ....")
     controller.loadServices(cont, servicefile)
@@ -81,7 +90,7 @@ def optionThree(cont):
     print('El número de componentes conectados es: ' +
           str(controller.connectedComponents(cont)))
 
-
+@mide_tiempo
 def optionFour(cont, initialStation):
     controller.minimumCostPaths(cont, initialStation)
 
@@ -92,7 +101,7 @@ def optionFive(cont, destStation):
           'y la estación: ' + destStation + ': ')
     print(haspath)
 
-
+@mide_tiempo
 def optionSix(cont, destStation):
     path = controller.minimumCostPath(cont, destStation)
     if path is not None:
